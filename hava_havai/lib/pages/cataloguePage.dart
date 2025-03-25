@@ -1,29 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hava_havai/provider/productProvider.dart';
+import 'package:hava_havai/widgets/productCard.dart';
 
-class Cataloguepage extends StatefulWidget {
+class Cataloguepage extends ConsumerWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _cataloguePageState();
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final products = ref.watch(productProvider);
 
-class _cataloguePageState extends State<Cataloguepage> {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Catalogue"),
+        title: Text('Catalogue'),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 255, 213, 227),
         actions: [
           IconButton(
+            icon: Icon(Icons.shopping_cart),
             onPressed: () {
               Navigator.popAndPushNamed(context, 'cart');
             },
-            icon: Icon(Icons.trolley),
           ),
         ],
       ),
+      body:
+          products.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  return ProductCard(product: products[index]);
+                },
+              ),
     );
   }
 }
